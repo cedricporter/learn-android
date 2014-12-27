@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">CustomViewTrain</string>
+    <string name="reset_button">reset</string>
 </resources>
