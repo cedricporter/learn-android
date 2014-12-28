@@ -20,7 +20,7 @@ import java.util.Random;
 public class MyListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private SimpleCursorAdapter adapter;
     ListView mListView;
-    Button mBtnAdd;
+    Button mBtnAdd, mBtnClear;
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -40,6 +40,7 @@ public class MyListFragment extends Fragment implements LoaderManager.LoaderCall
 
         mListView = (ListView) view.findViewById(R.id.listView);
         mBtnAdd = (Button) view.findViewById(R.id.btnAdd);
+        mBtnClear = (Button) view.findViewById(R.id.btnClear);
 
         // Fields from the database (projection)
         // Must include the _id column for the adapter to work
@@ -60,6 +61,13 @@ public class MyListFragment extends Fragment implements LoaderManager.LoaderCall
                 getActivity().getContentResolver().insert(ArticleProvider.CONTENT_URI, values);
             }
         });
+
+        mBtnClear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().getContentResolver().delete(ArticleProvider.CONTENT_URI, null, null);
+            }
+        });
     }
 
     @Override
@@ -67,7 +75,7 @@ public class MyListFragment extends Fragment implements LoaderManager.LoaderCall
         DebugLog.d("i = " + i);
         String[] projection = {MySQLiteHelper.COLUMN_ID, MySQLiteHelper.COLUMN_NAME};
         CursorLoader cursorLoader = new CursorLoader(getActivity(),
-                ArticleProvider.CONTENT_URI, projection, null, null, null);
+                ArticleProvider.CONTENT_URI, projection, null, null, MySQLiteHelper.COLUMN_ID + " DESC");
         return cursorLoader;
     }
 

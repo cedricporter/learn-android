@@ -80,7 +80,19 @@ public class ArticleProvider extends ContentProvider {
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-        return 0;
+        int uriType = sURIMatcher.match(uri);
+        SQLiteDatabase sqlDB = mDBHelper.getWritableDatabase();
+        int rowsDeleted = 0;
+        switch (uriType) {
+            case ARTICLES:
+                rowsDeleted = sqlDB.delete(MySQLiteHelper.TABLE_ARTICLE, selection,
+                        selectionArgs);
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown URI: " + uri);
+        }
+        getContext().getContentResolver().notifyChange(uri, null);
+        return rowsDeleted;
     }
 
     @Override
